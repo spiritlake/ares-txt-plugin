@@ -12,7 +12,7 @@ It can send as a simple person-to-person emit (like pages), as a scene emit, or 
 Allows users to choose their text color, reply to their previous text, start new scenes with a text.
 
 ## Installation
-In the game, run `plugin/install txt`.
+In the game, run `plugin/install <github url>`.
 
 ### Page Command
 
@@ -31,3 +31,8 @@ This outputs as: `<TXT> From Skew -> (to Pikachu) Hello there!`
 ## Uninstalling
 
 Removing the plugin requires some code fiddling.  See [Uninstalling Plugins](https://www.aresmush.com/tutorials/code/extras.html#uninstalling-plugins).
+
+
+## License
+
+Same as [AresMUSH](https://aresmush.com/license).
