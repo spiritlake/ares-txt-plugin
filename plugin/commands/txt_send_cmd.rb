@@ -4,7 +4,7 @@ module AresMUSH
           include CommandHandler
 # Possible commands... txt name=message; txt =message; txt name[/optional scene #]=<message>
 
-          attr_accessor :names, :message, :scene_id, :scene, :txt, :txt_recipient
+          attr_accessor :names, :message, :scene_id, :scene, :txt, :txt_recipient, :use_only_nick
 
         def parse_args
           if (!cmd.args)
@@ -55,7 +55,7 @@ module AresMUSH
           # Is scene real and can you text to it?
           if self.scene_id
             scene = Scene[self.scene_id]
-            can_txt_scene = Scenes.can_edit_scene?(enactor, scene)
+            can_txt_scene = Scenes.can_join_scene?(enactor, scene)
             if !scene
               client.emit_failure t('txt.scene_not_found')
               return
@@ -71,24 +71,23 @@ module AresMUSH
             self.scene = scene
           end
 
-          #Are recipients real and online?
+          #Are recipients real, online, and in the scene?
           recipients = []
           self.names.each do |name|
             char = Character.named(name)
-
             if !char
               client.emit_failure t('txt.no_such_character')
               return
             elsif (!Login.is_online?(char) && !self.scene)
-              client.emit_failure t('txt.target_offline_no_scene', :name => name )
+              client.emit_failure t('txt.target_offline_no_scene', :name => name.titlecase )
               return
             else
               recipients.concat [char]
             end
 
-            #Add recipient to scene
+            #Add recipient to scene if they are not already a participant
             if self.scene
-              can_txt_scene = Scenes.can_edit_scene?(char, self.scene)
+              can_txt_scene = Scenes.can_join_scene?(char, self.scene)
               if (!can_txt_scene)
                 Scenes.add_to_scene(scene, t('txt.recipient_added_to_scene', :name => char.name ),
                 enactor, nil, true )
@@ -112,31 +111,38 @@ module AresMUSH
             end
           end
 
-          recipient_names = Txt.format_recipient_indicator(recipients)
+          recipient_display_names = Txt.format_recipient_display_names(recipients)
+          recipient_names = Txt.format_recipient_names(recipients)
+          sender_display_name = Txt.format_sender_display_name(enactor)
 
+          self.use_only_nick = Global.read_config("txt", "use_only_nick")
           # If scene, add text to scene
           if self.scene
-            scene_txt = t('txt.txt_to_scene_with_recipient',
-            :txt => Txt.format_txt_indicator(enactor, recipient_names),
-            :sender => enactor.name,
-            # :recipients => recipient_names,
-            :message => message,
-            :scene_id => self.scene_id )
+            if self.use_only_nick
+              scene_id = "#{self.scene_id} - #{enactor.name}"
+            else
+              scene_id = self.scene_id
+            end
+
+            scene_txt = t('txt.txt_no_scene_id', :txt => Txt.format_txt_indicator(enactor, recipient_display_names), :sender => sender_display_name, :message => message)
+
+            self.txt = t('txt.txt_with_scene_id', :txt => Txt.format_txt_indicator(enactor, recipient_display_names), :sender => sender_display_name, :message => message, :scene_id => scene_id )
 
             Scenes.add_to_scene(self.scene, scene_txt, enactor)
             Rooms.emit_ooc_to_room self.scene.room, scene_txt
+          else
+            if self.use_only_nick
+              self.txt = t('txt.txt_no_scene_id_nick', :txt => Txt.format_txt_indicator(enactor, recipient_display_names), :sender => sender_display_name, :message => message, :sender_char => enactor.name )
+            else
+              self.txt = t('txt.txt_no_scene_id', :txt => Txt.format_txt_indicator(enactor, recipient_display_names), :sender => sender_display_name, :message => message)
+            end
+
           end
 
-          # If online, send emit to sender and recipients.
-
-          self.txt = t('txt.txt_to_sender',
-          :txt => Txt.format_txt_indicator(enactor, recipient_names),
-          :sender => enactor.name,
-          # :recipients => recipient_names,
-          :message => message)
+        # If online, send emit to sender and recipients if they aren't in the scene's room.
           #To recipients
           recipients.each do |char|
-            if Login.is_online?(char)
+            if (Login.is_online?(char)) && (!self.scene || char.room != self.scene.room)
               recipient = char
 
               if recipient.page_ignored.include?(enactor)
@@ -146,24 +152,22 @@ module AresMUSH
                 client.emit_ooc t('page.recipient_do_not_disturb', :name => recipient.name)
                 return
               end
-              Txt.txt_recipient(enactor, recipient, recipient_names, self.txt, self.scene_id)
+              Txt.txt_recipient(enactor, recipient, recipient_display_names, self.txt, scene_id)
             end
           end
+
           #To sender
-          if self.scene_id && (enactor.room.scene_id != self.scene_id)
-            client.emit "#{self.txt} %xh%xx(Scene #{self.scene_id})"
-          else
+          if (!self.scene || enactor_room != self.scene.room)
             client.emit self.txt
           end
 
           enactor.update(txt_last: list_arg(recipient_names))
           enactor.update(txt_scene: self.scene_id)
-
       end
+
       def log_command
-          # Don't log texts
+        # Don't log texts
       end
-
     end
   end
 end

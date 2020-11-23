@@ -1,19 +1,18 @@
 ---
 en:
   txt:
+      #Text Message Formatting
+      txt_no_scene_id: "%{txt} %xh%xw %{sender}%xn: %{message}%xn"
+      txt_no_scene_id_nick: "%{txt} %xh%{sender}%xn: %{message} %xx%xh(%{sender_char})%xn"
+      txt_with_scene_id: "%{txt} %xh%{sender}%xn: %{message} %xx%xh(Scene %{scene_id})%xn"
+
 
       txt_target_missing: "Beep boop: To whom shall I send this message?"
       cant_txt_ignored: "You can't txt %{names} because you're on their ignore list."
       recipient_do_not_disturb: "%{name} is set 'do not disturb' right now.  Please try your text again later."
-      target_offline_no_scene: "%{name} is not connected and you did not specify a scene."
-
-      txt_to_sender: "%{txt} %{sender}%xn: %{message}%xn"
-      txt_to_recipient: "%{txt} %{sender}%xn: %{message}%xn"
-      txt_to_recipient_with_scene: "%{txt} %xh%{sender}%xn: %{message} %xx%xh(Scene %{scene_id})%xn"
+      target_offline_no_scene: "%{name} is not connected and you did not specify a scene. To send texts to someone who is offline, start a new scene (txt/newscene name=msg)."
 
       recipient_added_to_scene: "That text has added %{name} to the scene participants list."
-      txt_to_scene_with_recipient: "%{txt} %xh%xw %{sender}%xn: %{message}%xn"
-      txt_to_scene_no_recipient: "%{txt} %xh%xw %{sender}%xn: %{message}%xn"
       no_such_character: "No character found by that name."
 
       no_one_to_reply_to: "Looks like no one's txt'd you recently. Sorry."
@@ -22,7 +21,7 @@ en:
 
       recipient_indicator: "%{recipients}"
 
-      txt_indicator: "%{color}%{start_marker}TXT to %{recipients}%{color}%{end_marker}%xn"
+      txt_indicator: "%{color}%{start_marker}%{preface} to %{recipients}%{color}%{end_marker}%xn"
 
       color_set: "Txts will now appear with this marker: %{option}%%%xn"
 
