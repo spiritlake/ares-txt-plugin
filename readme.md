@@ -30,7 +30,7 @@ The text preface, start, and end markers are configurable in txt.yml. By default
 
 You can further adjust the text format if you like. The message format is contained in `/aresmush/plugins/txt/locales/local_en.yml`.
 
-###Nicknames
+### Nicknames
 
 If you'd like nicknames to appear in the sender and recipient fields, you can toggle `use_nick` or `use_only_nick` true. Only mark ONE of these options as true.
 
@@ -39,7 +39,7 @@ Note that texts must still be SENT using the character's name and not their nick
 `use_nick` - Changes the sender and recipient display to your nickname display as set up in `nickname_format` in demographics.yml.
 `use_only_nick` - Changes the sender and recipient display to your nickname. Displays the sender's character name after the text, with the scene number.
 
-###Location and Scene Type
+### Location and Scene Type
 Sets the defaults for `txt/newscene` to autofill the location and scene type of text scenes. Be sure that scene type matches one of your scene_types as set in scenes.yml.
 
 ## Uninstalling
