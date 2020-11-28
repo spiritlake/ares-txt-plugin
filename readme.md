@@ -37,6 +37,7 @@ If you'd like nicknames to appear in the sender and recipient fields, you can to
 Note that texts must still be SENT using the character's name and not their nickname.
 
 `use_nick` - Changes the sender and recipient display to your nickname display as set up in `nickname_format` in demographics.yml.
+
 `use_only_nick` - Changes the sender and recipient display to your nickname. Displays the sender's character name after the text, with the scene number.
 
 ### Location and Scene Type
