@@ -8,6 +8,7 @@ module AresMUSH
 
         def parse_args
           if (!cmd.args)
+            #why is this here?
             self.names = []
 
           elsif (cmd.args.start_with?("="))
@@ -22,23 +23,26 @@ module AresMUSH
             if (args.arg1 && (args.arg1.include?("http://") || args.arg1.include?("https://")) )
               self.names = enactor.txt_last
               self.message = "#{args.arg1}=#{args.arg2}"
-
+            #Text a specific scene
             elsif ( args.arg1.include?("/") )
               if args.arg1.rest("/").is_integer?
                 self.scene_id = args.arg1.rest("/")
                 self.names = list_arg(args.arg1.first("/"))
                 self.message = trim_arg(args.arg2)
+              #Text the scene you are physically in
               elsif args.arg1.rest("/").chr.casecmp?("s")
                 self.scene_id = enactor.room.scene_id
                 self.names = list_arg(args.arg1.first("/"))
                 self.message = trim_arg(args.arg2)
               end
             else
+              #Text someone without a scene
               self.names = list_arg(args.arg1)
               self.message = trim_arg(args.arg2)
             end
 
           else
+            #Text your last recipient and scene
             self.names = enactor.txt_last
             self.scene_id = enactor.txt_scene
             self.message = cmd.args
@@ -46,7 +50,7 @@ module AresMUSH
         end
 
         def check_approved
-          return nil if enactor.is_approved? 
+          return nil if enactor.is_approved?
           return t('dispatcher.not_allowed')
         end
 
@@ -60,7 +64,8 @@ module AresMUSH
           # Is scene real and can you text to it?
           if self.scene_id
             scene = Scene[self.scene_id]
-            can_txt_scene = Scenes.can_join_scene?(enactor, scene)
+            can_txt_scene = Scenes.can_read_scene?(enactor, scene)
+
             if !scene
               client.emit_failure t('txt.scene_not_found')
               return
@@ -92,7 +97,7 @@ module AresMUSH
 
             #Add recipient to scene if they are not already a participant
             if self.scene
-              can_txt_scene = Scenes.can_join_scene?(char, self.scene)
+              can_txt_scene = Scenes.can_read_scene?(char, self.scene)
               if (!can_txt_scene)
                 Scenes.add_to_scene(scene, t('txt.recipient_added_to_scene', :name => char.name ),
                 enactor, nil, true )
@@ -116,7 +121,7 @@ module AresMUSH
             end
           end
 
-          recipient_display_names = Txt.format_recipient_display_names(recipients)
+          recipient_display_names = Txt.format_recipient_display_names(recipients, enactor)
           recipient_names = Txt.format_recipient_names(recipients)
           sender_display_name = Txt.format_sender_display_name(enactor)
 

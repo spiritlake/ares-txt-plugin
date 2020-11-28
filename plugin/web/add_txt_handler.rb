@@ -19,7 +19,7 @@ module AresMUSH
                 error = Website.check_login(request)
                 return error if error
 
-                if (!Scenes.can_join_scene?(enactor, scene))
+                if (!Scenes.can_read_scene?(enactor, scene))
                     return { error: t('scenes.access_not_allowed') }
                 end
 
@@ -42,7 +42,7 @@ module AresMUSH
                         message = pose
                     else
                         names = pose.first("=") ? pose.first("=").split(" ") : nil
-                        recipients = []
+                        recipients = [enactor]
                         names.each do |name|
                           char = Character.named(name)
                           if !char
@@ -54,13 +54,12 @@ module AresMUSH
                         message = pose.rest("=")
                     end
                 else
-                  recipients = scene.participants
+                  recipients = scene.participants.to_a
                   message = pose
                 end
 
-                recipients_minus = recipients.delete(enactor)
                 recipient_names = Txt.format_recipient_names(recipients)
-                recipient_display_names = Txt.format_recipient_display_names(recipients)
+                recipient_display_names = Txt.format_recipient_display_names(recipients, enactor)
                 sender_display_name = Txt.format_sender_display_name(enactor)
                 scene_room = scene.room
                 use_only_nick = Global.read_config("txt", "use_only_nick")
@@ -71,7 +70,7 @@ module AresMUSH
                 end
 
                 recipients.each do |char|
-                  can_txt_scene = Scenes.can_join_scene?(char, scene)
+                  can_txt_scene = Scenes.can_read_scene?(char, scene)
                   #If they aren't in the scene currently, add them
                   if (!can_txt_scene)
                     Scenes.add_to_scene(scene, t('txt.recipient_added_to_scene',
@@ -89,6 +88,11 @@ module AresMUSH
                       scene.watchers.add char
                     end
                   end
+
+                  txt_received = "#{recipient_names}"
+                  txt_received.slice! "#{char.name}"
+                  char.update(txt_received: (txt_received.squish))
+                  char.update(txt_received_scene: scene_id)
 
                   #Emit to online players
 
@@ -110,6 +114,8 @@ module AresMUSH
                     end
                   end
                 end
+
+
 
                 scene_txt = t('txt.txt_no_scene_id',
                 :txt => Txt.format_txt_indicator(enactor, recipient_display_names),
