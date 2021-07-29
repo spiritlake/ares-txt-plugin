@@ -21,12 +21,14 @@ export default Component.extend({
         let api = this.get('gameApi');
         this.set('scenePose', '');
         api.requestOne('addTxt', { scene_id: this.get('scene.id'),
-            pose: pose }, null)
+            pose: pose,
+            pose_char: this.get('scene.poseChar.id') }, null)
         .then( (response) => {
             if (response.error) {
                 this.get('flashMessages').error(response.error);
                 return;
             }
+            this.scrollSceneWindow();
         });
     }
 
