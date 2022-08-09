@@ -71,6 +71,7 @@ module AresMUSH
       end
 
       def self.txt_recipient(sender, recipient, recipient_names, message, scene_id = nil)
+        Scenes.handle_word_count_achievements(sender, message)
         client = Login.find_client(sender)
         recipient_client  = Login.find_client(recipient)
         Login.emit_if_logged_in recipient, message
