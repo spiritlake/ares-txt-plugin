@@ -135,7 +135,7 @@ module AresMUSH
                 :sender => sender_display_name,
                 :message => message )
                 Scenes.add_to_scene(scene, scene_txt, char)
-                Scenes.handle_word_count_achievements(enactor, message)
+                Scenes.handle_word_count_achievements(char, message)
 
                 room_txt = t('txt.txt_with_scene_id',
                 :txt => Txt.format_txt_indicator(char, recipient_display_names),
