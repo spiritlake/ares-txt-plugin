@@ -10,7 +10,7 @@ module AresMUSH
           # if (!cmd.args)
           #   #why is this here?
           #   self.names = []
-          #  IF YOU PUT THIS BACK IN, CHANGE NEXT LIKE TO ELSIF
+          #  IF YOU PUT THIS BACK IN, CHANGE NEXT LINE TO ELSIF
 
           if (cmd.args.start_with?("="))
             self.names = enactor.txt_last
@@ -167,6 +167,7 @@ module AresMUSH
 
           enactor.update(txt_last: list_arg(recipient_names))
           enactor.update(txt_scene: self.scene_id)
+          Scenes.handle_word_count_achievements(enactor, message)
       end
 
       def log_command

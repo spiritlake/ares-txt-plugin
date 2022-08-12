@@ -2,9 +2,9 @@
 en:
   txt:
       #Text Message Formatting
-      txt_no_scene_id: "%{txt} %xh%xw %{sender}%xn: %{message}%xn"
-      txt_no_scene_id_nick: "%{txt} %xh%{sender}%xn: %{message} %xx%xh(%{sender_char})%xn"
-      txt_with_scene_id: "%{txt} %xh%{sender}%xn: %{message} %xx%xh(Scene %{scene_id})%xn"
+      txt_no_scene_id: "%{txt} %xh%xw%{sender}:%xn %{message}%xn"
+      txt_no_scene_id_nick: "%{txt} %xh%w%{sender}:%xn %{message} %xx%xh(%{sender_char})%xn"
+      txt_with_scene_id: "%{txt} %xh%xw%{sender}:%xn %{message} %xx%xh(Scene %{scene_id})%xn"
 
 
       txt_target_missing: "Beep boop: To whom shall I send this message?"
@@ -15,13 +15,13 @@ en:
       recipient_added_to_scene: "That text has added %{name} to the scene participants list."
       no_such_character: "No character found by that name."
 
-      no_one_to_reply_to: "Looks like no one's txt'd you recently. Sorry."
+      no_one_to_reply_to: "Looks like no one's txted you recently. Sorry."
       reply_scene: "Last txt came from: %{names}; Scene: %{scene}"
       reply: "Last txt came from: %{names}"
 
       recipient_indicator: "%{recipients}"
 
-      txt_indicator: "%{color}%{start_marker}%{preface} to %{recipients}%{color}%{end_marker}%xn"
+      txt_indicator: "%{color}%{start_marker}%{preface} to %{recipients}%{end_marker}%xn"
 
       color_set: "Txts will now appear with this marker: %{option}%%%xn"
 
