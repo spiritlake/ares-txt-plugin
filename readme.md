@@ -45,7 +45,7 @@ Sets the defaults for `txt/newscene` to autofill the location and scene type of 
 
 ## Uninstalling
 
-Removing the plugin requires some code fiddling.  See [Uninstalling Plugins](https://www.aresmush.com/tutorials/code/extras.html#uninstalling-plugins).
+Removing the plugin requires some code fiddling.  See [Uninstalling the Text Plugin](Uninstalling.md).
 
 
 ## License
