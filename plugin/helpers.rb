@@ -71,12 +71,28 @@ module AresMUSH
       end
 
       def self.txt_recipient(sender, recipient, recipient_names, message, scene_id = nil)
-        client = Login.find_client(sender)
-        recipient_client  = Login.find_client(recipient)
+        client = Login.find_game_client(sender)
+        recipient_client  = Login.find_game_client(recipient)
         Login.emit_if_logged_in recipient, message
         Page.send_afk_message(client, recipient_client, recipient)
       end
 
-
+      def self.uninstall_plugin(client)
+        begin 
+          Character.all.each do |c|
+            c.update(txt_last: nil)
+            c.update(txt_last_scene: nil)
+            c.update(txt_received: nil)
+            c.update(txt_received_scene: nil)
+            c.update(txt_color: nil)
+            c.update(txt_scene: nil)
+          end
+           Manage.uninstall_plugin("txt")
+           client.emit_success "Plugin uninstalled."
+      
+         rescue Exception => e
+           client.emit_failure "Error uninstalling plugin: #{e} backtrace=#{e.backtrace[0,10]}"
+         end
+       end
     end
 end

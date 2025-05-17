@@ -4,11 +4,11 @@ module AresMUSH
 
           def handle(request)
             # Global.logger.debug  "Request: #{request.args}"
-              scene_id = request.args[:scene_id]
-              scene = Scene[request.args[:scene_id]]
-              pose = request.args[:pose]
+              scene_id = request.args["scene_id"]
+              scene = Scene[request.args["scene_id"]]
+              pose = request.args["pose"]
               enactor = request.enactor
-              pose_char = request.args[:pose_char]
+              pose_char = request.args["pose_char"]
               char = pose_char ? Character[pose_char] : request.enactor
              if (!char)
                return { error: t('webportal.not_found') }
@@ -122,7 +122,7 @@ module AresMUSH
                   if (r.page_do_not_disturb)
                     nil
                   elsif r.room.scene_id != scene_id
-                    client = Login.find_client(r)
+                    client = Login.find_game_client(r)
                     client.emit recipient_txt
                   else
                     nil
